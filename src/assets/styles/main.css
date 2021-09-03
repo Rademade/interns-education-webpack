@@ -1,0 +1,18 @@
+:root {
+  --primary-color: #000;
+}
+
+
+html {
+  color: var(--primary-color);
+  font-size: 16px;
+  line-height: 1.42;
+  font-family: Arial, sans-serif;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1230px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
