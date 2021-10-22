@@ -1,12 +1,14 @@
-const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
 const { cssLoader } = require('./loaders/css.loader');
 const { svgSpriteLoader } = require('./loaders/svg-sprite.loader');
 const { babelLoader } = require('./loaders/babel.loader');
 const { vueLoader } = require('./loaders/vue.loader');
+const { resolvePath } = require('./helpers/resolve-path.helper');
+const { applicationEnvironment } = require('./helpers/application-environment.helper');
 
-module.exports = {
+module.exports = ({ environment }) => ({
   mode: 'development',
   entry: {
     main: './src/main.js',
@@ -22,15 +24,36 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue'],
     alias: {
-      '@': path.resolve(__dirname, '../src'),
+      '@': resolvePath('src'),
+      process: 'process/browser'
     },
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
+    new webpack.EnvironmentPlugin(applicationEnvironment(environment)),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './public/index.html'
+      template: resolvePath('public/index.html'),
+      templateParameters: (compilation, assets, assetTags, options) => {
+        return {
+          compilation,
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            tags: assetTags,
+            files: assets,
+            options: {
+              ...options,
+              appName: environment.VUE_APP_NAME,
+            }
+          },
+          'foo': 'bar'
+        };
+      },
     }),
     new VueLoaderPlugin(),
+
   ],
   optimization: {
     splitChunks: {
@@ -41,7 +64,7 @@ module.exports = {
 
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, '../dist'),
+    path: resolvePath('dist'),
     clean: true,
   },
-};
+});
