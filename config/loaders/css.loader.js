@@ -1,4 +1,4 @@
-const path = require('path');
+const { resolvePath } = require('../helpers/resolve-path.helper');
 
 module.exports.cssLoader = {
   test: /\.css$/i,
@@ -14,7 +14,7 @@ module.exports.cssLoader = {
       loader: 'postcss-loader',
       options: {
         postcssOptions: {
-          config: path.resolve(__dirname, './postcss/postcss.config.js'),
+          config: resolvePath('config/loaders/postcss/postcss.config.js'),
         },
       },
     },

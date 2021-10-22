@@ -16,7 +16,7 @@ module.exports = (environment) => {
   loadEnvironmentFile(environment_);
 
   const commonConfig_ = commonConfig({ environment: process.env });
-
+``
   switch (environment_) {
     case AVAILABLE_ENVIRONMENTS.Production:
       return merge(commonConfig_, productionConfig)
